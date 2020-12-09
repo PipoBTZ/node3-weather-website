@@ -17,7 +17,8 @@ const weatherstack = (latitude, longitude, callback) => {
                 temperatureFeelsLike: body.current.feelslike,
                 location: body.location.name,
                 country: body.location.country,
-                description: body.current.weather_descriptions.join(' and ')
+                description: body.current.weather_descriptions.join(' and '),
+                icon: body.current.weather_icons[0]
             }
             callback(undefined, weather)
         }

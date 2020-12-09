@@ -54,6 +54,13 @@ button {
     padding: 8px;
 }
 
+#weather-icon {
+    margin: 16px 16px 16px 0;
+    border: 1px solid #333333;
+    float: left;
+    display: none;
+}
+
 /*
 #message-1 {
     background: lightgreen;
