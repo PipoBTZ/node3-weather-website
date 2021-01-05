@@ -51,11 +51,13 @@ app.get('/weather', (req, res) => {
         })
     }
 
-    geocode(req.query.address, (error, {latitude, longitude, name:locationName} = {}) => {
-        if (error) {
-            return res.send({error})
-        }
+    // Check if address are already coords
+    const isCoordinates = req.query.address.match(/(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)/) !== null
 
+    if (isCoordinates) {
+        const latitude = parseFloat(req.query.address.split(',')[0])
+        const longitude = parseFloat(req.query.address.split(',')[1])
+        
         weatherstack(latitude, longitude, (error, weather) => {
             if (error) {
                 return res.send({error})
@@ -64,14 +66,39 @@ app.get('/weather', (req, res) => {
             return res.send({
                 weather,
                 location: {
-                    name: locationName,
+                    name: req.query.address,
                     latitude,
                     longitude
                 },
                 address: req.query.address
             })
         })
-    })
+    } else {
+        geocode(req.query.address, (error, {latitude, longitude, name:locationName} = {}) => {
+            if (error) {
+                console.log(error)
+                return res.send({error})
+            }
+    
+            weatherstack(latitude, longitude, (error, weather) => {
+                if (error) {
+                    return res.send({error})
+                }
+                
+                return res.send({
+                    weather,
+                    location: {
+                        name: locationName,
+                        latitude,
+                        longitude
+                    },
+                    address: req.query.address
+                })
+            })
+        })
+    }
+
+    
 })
 
 app.get('/products', (req, res) => {
